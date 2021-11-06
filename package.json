@@ -1,0 +1,25 @@
+{
+  "name": "eventbridge-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "prettier": "prettier-airbnb-config",
+  "dependencies": {
+    "prettier-airbnb-config": "^1.0.0",
+    "prettier": "^2.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oslabs-beta/eventbridge-express.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oslabs-beta/eventbridge-express/issues"
+  },
+  "homepage": "https://github.com/oslabs-beta/eventbridge-express#readme"
+}
