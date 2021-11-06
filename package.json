@@ -20,7 +20,8 @@
     "build": "tsc",
     "start": "tsc & node .",
     "dev": "tsc -w & nodemon .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier -c src/*"
   },
   "repository": {
     "type": "git",
