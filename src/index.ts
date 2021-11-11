@@ -1,5 +1,5 @@
 export class HelloWorld {
-  getGreeting(theName: String) : string {
+  getGreeting(theName: String): string {
     return `Hello ${theName}`;
   }
 }
