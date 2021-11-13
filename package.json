@@ -34,7 +34,9 @@
     "test": "jest",
     "format": "prettier -c src/*",
     "prepare": "husky install",
-    "lint": "eslint src/*"
+    "lint": "eslint src/**/*.ts", 
+    "format:fix": "prettier -c src/* --write",
+    "lint:fix": "eslint src/**/*.ts --fix" 
   },
   "repository": {
     "type": "git",
@@ -47,6 +49,6 @@
   },
   "homepage": "https://github.com/oslabs-beta/eventbridge-express#readme",
   "lint-staged": {
-    "src/**/*.ts": "npm run lint"
+    "src/**/*.ts": ["npm run format", "npm run lint"]
   }
 }
