@@ -15,5 +15,23 @@
         "@typescript-eslint"
     ],
     "rules": {
+      "import/extensions": "off"
+    },
+    "overrides": [
+      {
+        "files": [
+          "src/tests/**/*.ts"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ],
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [".js", ".ts"]
+        }
+      }
     }
 }
