@@ -11,6 +11,8 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^16.11.6",
+    "husky": "^7.0.0",
+    "lint-staged": "^11.2.6",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
     "eslint": "^8.2.0",
@@ -27,6 +29,7 @@
     "dev": "tsc -w & nodemon .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier -c src/*",
+    "prepare": "husky install",
     "lint": "eslint src/*"
   },
   "repository": {
@@ -38,5 +41,8 @@
   "bugs": {
     "url": "https://github.com/oslabs-beta/eventbridge-express/issues"
   },
-  "homepage": "https://github.com/oslabs-beta/eventbridge-express#readme"
+  "homepage": "https://github.com/oslabs-beta/eventbridge-express#readme",
+  "lint-staged": {
+    "*.src/*": "prettier --write && eslint src/*"
+  }
 }
