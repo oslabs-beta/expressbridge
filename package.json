@@ -26,7 +26,8 @@
     "start": "tsc & node .",
     "dev": "tsc -w & nodemon .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier -c src/*"
+    "format": "prettier -c src/*",
+    "lint": "npx eslint src/*"
   },
   "repository": {
     "type": "git",
