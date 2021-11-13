@@ -4,7 +4,6 @@ name: DEV CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the dev branch
   push:
     branches: [ dev ]
 
@@ -13,7 +12,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -32,6 +31,4 @@ jobs:
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          registry: //npm.pkg.github.com/
-
-
+          registry: https://npm.pkg.github.com/
