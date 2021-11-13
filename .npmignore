@@ -1,2 +1,4 @@
-tests
-src
+**/*
+!dist/**/*
+!package.json
+!package-lock.json
