@@ -47,6 +47,6 @@
   },
   "homepage": "https://github.com/oslabs-beta/eventbridge-express#readme",
   "lint-staged": {
-    "*.src/*": "prettier --write && eslint src/*"
+    "src/**/*": "prettier --write && eslint src/*"
   }
 }
