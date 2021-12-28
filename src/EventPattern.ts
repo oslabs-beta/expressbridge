@@ -3,10 +3,9 @@ type handlerType = <T>(context: T) => Partial<T>;
 type errorHandlerType = (exception: unknown) => never;
 
 class EventPattern<PatternType> {
-
   constructor(
     private pattern: Partial<PatternType>,
-    private handlers: handlerType[], 
+    private handlers: handlerType[],
     private errorHandler: errorHandlerType
   ) {}
 

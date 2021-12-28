@@ -5,5 +5,5 @@ export class HelloWorld {
   }
 }
 */
-const instance = new HelloWorld();
-console.log(instance.getGreeting('Example'));
+// const instance = new HelloWorld();
+// console.log(instance.getGreeting('Example'));
