@@ -1,13 +1,13 @@
- /* eslint-disable */
-type handlerType = () => void;
-type errorHandlerType = handlerType;
+/* eslint-disable */
+type handlerType = <T>(context: T) => Partial<T>;
+type errorHandlerType = (exception: unknown) => never;
 
 class EventPattern<PatternType> {
 
   constructor(
     private pattern: Partial<PatternType>,
     private handlers: handlerType[], 
-    private errorHandler: errorHandlerType = () => {}
+    private errorHandler: errorHandlerType
   ) {}
 
   public getPattern(): Partial<PatternType> {
