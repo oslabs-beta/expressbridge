@@ -1,8 +1,8 @@
 /* eslint-disable */
-type handlerType = <T>(context: T) => Partial<T>;
-type errorHandlerType = (exception: unknown) => never;
+export type handlerType = <T>(context: T) => Partial<T>;
+export type errorHandlerType = (exception: unknown) => never;
 
-class EventPattern<PatternType> {
+export class EventPattern<PatternType> {
   constructor(
     private pattern: Partial<PatternType>,
     private handlers: handlerType[],
