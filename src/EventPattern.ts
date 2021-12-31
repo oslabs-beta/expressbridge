@@ -32,4 +32,10 @@ export class EventPattern<PatternType> {
   public setErrorHandler(errorHandler: errorHandlerType): void {
     this.errorHandler = errorHandler;
   }
+
+  public test(incomingEvent: Object): boolean {
+    const incomingEventStr: string = ;
+
+    return false;
+  }
 }

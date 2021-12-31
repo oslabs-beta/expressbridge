@@ -20,12 +20,11 @@ export default class ExpressBridge {
 
   private postHookHandlers: handlerType[] = [];
 
-  private matchEventToPattern(incomingEvent: Event);
 
   public pipelineEvent(incomingEvent: Object): void {
       // pipeline event through preHook handlers and save output
       // match pattern to handlers
-      const matchedPattern: EventPattern = this.matchEventToPattern(incomingEvent: Event);
+      const matchedPatterns: EventPattern[] = this.matchEventToPattern(incomingEvent: Event);
       // pipeline prehook output through handlers belonging to correct EventPattern
       // pipeline EventPattern output through postHook handlers
 
@@ -64,13 +63,68 @@ export default class ExpressBridge {
     const patternInstance = new EventPattern<typeof pattern>(pattern, handlers, errorHandler);
     this.comparableCollection.push(patternInstance);
   }
-  
-  public matchEventToPattern() {
 
-  }
+  private matchEventToPattern(incomingEvent: Event): EventPattern[] {
+    // iterate through comparableCollection
+    /*
+    Event {
+      source: 'marketplace_offers',
+      id: 1000
+    }
+
+    EventPattern{
+      source: /market./ig
+      id: /100[0-9]/g
+    }
+
+      [EventType { pattern: { source: /market./ig }}]
+    
+      1. How to test to see if the incomingEvent matches the pattern at position i
+    */
+    const matchedPatterns = this.comparableCollection.filter(eventPattern: EventPattern => {
+      // what happens here
+      // on a string, we have the match method
+      // on a regexp instance, we have the test method
+      let result = true;
+
+      for (let key in eventPattern.pattern) {
+        if (!incomingEvent[key]) return false;
+      }
+
+      for (let key in eventPattern.pattern) {
+        if (eventPattern.pattern[key] instanceof RegExp) {
+          result = result && eventPattern.pattern.test(incomingEvent[key])
+        }
+      }
+      
+      return result;
+    });
+    return []
+  };
 
   public addPostHookHandlers(...handlers: handlerType[]): void {
     this.postHookHandlers.push(...handlers);
   }
 
 };
+
+const pattern = {
+  source: 'marketplace*'
+}
+
+const eventPattern = new EventPattern<typeof pattern>(pattern, [() => {}], () => {})
+
+/*
+matchingFunction(incomingEvent) {
+  return (incomingEvent[someKey] == val);
+}
+
+-- line 57:
+
+matchedPatterns = .filter((eventPattern.test(incomingEvent)))
+
+test(incomingEvent) {
+  this.matchingFunction(incomingEvent)
+}
+
+*/
