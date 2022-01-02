@@ -1,130 +1,72 @@
 import type { handlerType, errorHandlerType } from './EventPattern';
 import { EventPattern } from './EventPattern';
 
+type EventType = Record<string, unknown>;
+
+interface ExpressBridgeOptions {
+  alwaysRunHooks?: boolean;
+}
 export default class ExpressBridge {
-  /*
-    data
-        #comparableCollection 
-          - a list of EventPattern
-    methods
-        constructor ()
-        preHook
-        postHook
-        mapPatternToHandlers
-        #match
-        dispatch( pojo Event object)
-  */
-  private comparableCollection: EventPattern<any>[] = [];
+  private comparableCollection: EventPattern<unknown>[] = [];
 
-  private preHookHandlers: handlerType[] = [];
+  private preHandlers: handlerType[] = [];
 
-  private postHookHandlers: handlerType[] = [];
+  private postHandlers: handlerType[] = [];
 
+  public constructor(public options: ExpressBridgeOptions) {}
 
-  public pipelineEvent(incomingEvent: Object): void {
-      // pipeline event through preHook handlers and save output
-      // match pattern to handlers
-      const matchedPatterns: EventPattern[] = this.matchEventToPattern(incomingEvent: Event);
-      // pipeline prehook output through handlers belonging to correct EventPattern
-      // pipeline EventPattern output through postHook handlers
-
-
-      // { alwaysRunHooks: true } // default is false
-      // default behavior is... 
-      // if pattern cannot be matched to existing EventPattern, throw exception
-    // this requires some kind of pipeline
-    // const collectionOfFunctions = [(event) => {}, (event) => {}];
-
-    matchedPatterns.forEach(pattern => {
-        pipeline(incomingEvent, pattern.handlers);
-    });
-
-    function pipeline (event: EventType, pattern: EventPattern) { 
-      pattern.handlers.reduce((eventAccumulator: EventType, handler: handlerType) => {
-        try {
-            return handler(eventAccumulator)
-        } catch(error: unknown) {
-            pattern.getErrorHandler()(error);
-        }
-      }, event);
-    }
-  }
-
-  public addPreHookHandlers(...handlers: handlerType[]): void {
-    this.preHookHandlers.push(...handlers);
-  }
-
-  public mapPatternToHandlers(
-    pattern: Record<string, RegExp>,
+  public use(
+    pattern: Record<string, unknown>,
     handlers: handlerType[],
-    errorHandler: errorHandlerType,
+    errorHandler: errorHandlerType
   ): void {
-    // this is the most rudimentary, brute force implementation of this data structure
-    const patternInstance = new EventPattern<typeof pattern>(pattern, handlers, errorHandler);
+    const patternInstance = new EventPattern<typeof pattern>(
+      pattern,
+      handlers,
+      errorHandler
+    );
     this.comparableCollection.push(patternInstance);
   }
 
-  private matchEventToPattern(incomingEvent: Event): EventPattern[] {
-    // iterate through comparableCollection
-    /*
-    Event {
-      source: 'marketplace_offers',
-      id: 1000
-    }
-
-    EventPattern{
-      source: /market./ig
-      id: /100[0-9]/g
-    }
-
-      [EventType { pattern: { source: /market./ig }}]
-    
-      1. How to test to see if the incomingEvent matches the pattern at position i
-    */
-    const matchedPatterns = this.comparableCollection.filter(eventPattern: EventPattern => {
-      // what happens here
-      // on a string, we have the match method
-      // on a regexp instance, we have the test method
-      let result = true;
-
-      for (let key in eventPattern.pattern) {
-        if (!incomingEvent[key]) return false;
+  public async process(incomingEvent: EventType): Promise<void> {
+    const matchedPatterns = this.comparableCollection.filter(
+      (eventPattern: EventPattern<Partial<typeof incomingEvent>>) => {
+        return eventPattern.test(incomingEvent);
       }
+    );
+    if (matchedPatterns.length > 0) {
+      // run pre hook
+      this.preHandlers.forEach((handler) => {
+        handler(incomingEvent);
+      });
 
-      for (let key in eventPattern.pattern) {
-        if (eventPattern.pattern[key] instanceof RegExp) {
-          result = result && eventPattern.pattern.test(incomingEvent[key])
+      // run pattern handlers
+      for (const pattern of matchedPatterns) {
+        try {
+          pipeline(incomingEvent, ...pattern.getHandlers());
+        } catch (err) {
+          pattern.getErrorHandler()(err);
         }
       }
-      
-      return result;
-    });
-    return []
-  };
 
-  public addPostHookHandlers(...handlers: handlerType[]): void {
-    this.postHookHandlers.push(...handlers);
+      // run post handlers
+      this.postHandlers.forEach((handler) => {
+        handler(incomingEvent);
+      });
+    }
   }
 
-};
+  public pre(...handlers: handlerType[]): void {
+    this.preHandlers.push(...handlers);
+  }
 
-const pattern = {
-  source: 'marketplace*'
+  public post(...handlers: handlerType[]): void {
+    this.postHandlers.push(...handlers);
+  }
 }
 
-const eventPattern = new EventPattern<typeof pattern>(pattern, [() => {}], () => {})
-
-/*
-matchingFunction(incomingEvent) {
-  return (incomingEvent[someKey] == val);
+function pipeline(message: EventType, ...functions: handlerType[]): EventType {
+  return functions.reduce((acc, func) => {
+    return func(acc);
+  }, message);
 }
-
--- line 57:
-
-matchedPatterns = .filter((eventPattern.test(incomingEvent)))
-
-test(incomingEvent) {
-  this.matchingFunction(incomingEvent)
-}
-
-*/
