@@ -86,8 +86,11 @@ function testValue(expected: unknown, actual: unknown): boolean {
       result = expected === actual;
     }
   } else if (typeof expected === 'number' || typeof expected === 'boolean') {
+    // TODO: Match numbers/booleans
   } else if (expected instanceof RegExp) {
+    // TODO: Match via RegEx
   } else {
+    // TODO: This may not be necessary. Might also be ok to throw exception here.
   }
 
   return result;

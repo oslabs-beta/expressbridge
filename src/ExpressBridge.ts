@@ -36,23 +36,19 @@ export default class ExpressBridge {
     );
     if (matchedPatterns.length > 0) {
       // run pre hook
-      this.preHandlers.forEach((handler) => {
-        handler(incomingEvent);
-      });
+      const output = pipeline(incomingEvent, ...this.preHandlers);
 
       // run pattern handlers
       for (const pattern of matchedPatterns) {
         try {
-          pipeline(incomingEvent, ...pattern.getHandlers());
+          pipeline(output, ...pattern.getHandlers());
         } catch (err) {
           pattern.getErrorHandler()(err);
         }
       }
 
       // run post handlers
-      this.postHandlers.forEach((handler) => {
-        handler(incomingEvent);
-      });
+      pipeline(incomingEvent, ...this.postHandlers);
     }
   }
 
