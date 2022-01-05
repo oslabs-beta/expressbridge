@@ -12,7 +12,12 @@
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "types": ["node", "jest"],
+    "typeRoots": ["./types", "node_modules/@types"],
+    "lib": [      
+      "es2020",
+    ]
   },
   "include": ["src/*"],
   "exclude": ["dist", "node_modules", "src/tests"]
