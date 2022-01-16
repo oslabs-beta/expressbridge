@@ -23,9 +23,6 @@ jobs:
       - name: Install
         run: npm install
 
-      - name: Prepare
-        run: npm run prepare
-
       # Build package
       - name: Build
         run: npm run build
