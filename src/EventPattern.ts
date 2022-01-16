@@ -1,5 +1,5 @@
 /* eslint-disable */
-export type handlerType = (context: unknown) => Partial<unknown>;
+export type handlerType = (context: any) => Partial<any>;
 export type errorHandlerType = (exception: unknown) => never;
 
 export class EventPattern<T> {
