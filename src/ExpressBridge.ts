@@ -6,7 +6,7 @@ type EventType = Record<string, unknown>;
 interface ExpressBridgeOptions {
   alwaysRunHooks?: boolean;
 }
-export default class ExpressBridge {
+export class ExpressBridge {
   private comparableCollection: EventPattern<unknown>[] = [];
 
   private preHandlers: handlerType[] = [];
