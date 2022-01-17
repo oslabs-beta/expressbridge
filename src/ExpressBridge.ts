@@ -1,7 +1,7 @@
 import type { handlerType, errorHandlerType } from './EventPattern';
 import { EventPattern } from './EventPattern';
 
-type EventType = Record<string, unknown>;
+type EventType = { [key: string]: any };
 
 interface ExpressBridgeOptions {
   alwaysRunHooks?: boolean;
