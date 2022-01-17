@@ -39,6 +39,7 @@ export class ExpressBridge {
       const output = pipeline(incomingEvent, ...this.preHandlers);
 
       // run pattern handlers
+      console.log('incomingEvent', incomingEvent);
       for (const pattern of matchedPatterns) {
         try {
           pipeline(output, ...pattern.getHandlers());
@@ -62,7 +63,9 @@ export class ExpressBridge {
 }
 
 function pipeline(message: EventType, ...functions: handlerType[]): EventType {
-  return functions.reduce((acc, func) => {
+  const reduced = functions.reduce((acc, func) => {
     return func(acc);
   }, message);
+  console.log(reduced);
+  return reduced;
 }
