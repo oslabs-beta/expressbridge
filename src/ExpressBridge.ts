@@ -36,13 +36,12 @@ export class ExpressBridge {
     );
     if (matchedPatterns.length > 0) {
       // run pre hook
-      const output = pipeline(incomingEvent, ...this.preHandlers);
+      const output = await pipeline(incomingEvent, ...this.preHandlers);
 
       // run pattern handlers
-      console.log('incomingEvent', incomingEvent);
       for (const pattern of matchedPatterns) {
         try {
-          pipeline(output, ...pattern.getHandlers());
+          await pipeline(output, ...pattern.getHandlers());
         } catch (err) {
           pattern.getErrorHandler()(err);
         }
@@ -63,9 +62,9 @@ export class ExpressBridge {
 }
 
 function pipeline(message: EventType, ...functions: handlerType[]): EventType {
-  const reduced = functions.reduce((acc, func) => {
-    return func(acc);
+  const reduced = functions.reduce(async (acc, func) => {
+    return func(await acc);
   }, message);
-  console.log(reduced);
+
   return reduced;
 }
