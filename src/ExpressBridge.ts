@@ -36,7 +36,9 @@ export default class ExpressBridge {
     );
     if (matchedPatterns.length > 0) {
       // run pre hook
-      const output = pipeline(incomingEvent, ...this.preHandlers);
+      const output = (this.options.alwaysRunHooks) ? 
+                      pipeline(incomingEvent, ...this.preHandlers) :
+                      incomingEvent;
 
       // run pattern handlers
       for (const pattern of matchedPatterns) {
@@ -48,7 +50,7 @@ export default class ExpressBridge {
       }
 
       // run post handlers
-      pipeline(incomingEvent, ...this.postHandlers);
+      if (this.options.alwaysRunHooks) pipeline(incomingEvent, ...this.postHandlers);
     }
   }
 
