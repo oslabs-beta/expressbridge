@@ -1,10 +1,14 @@
+import { AxiosRequestConfig } from 'axios';
+import { v4 } from 'uuid';
 import type { handlerType, errorHandlerType } from './EventPattern';
 import { EventPattern } from './EventPattern';
+import { Telemetry } from './Telemetry';
 
 type EventType = Record<string, any>;
 
 interface ExpressBridgeOptions {
   alwaysRunHooks?: boolean;
+  telemetry?: Partial<AxiosRequestConfig>;
 }
 export class ExpressBridge {
   private comparableCollection: EventPattern<unknown>[] = [];
@@ -12,6 +16,8 @@ export class ExpressBridge {
   private preHandlers: handlerType[] = [];
 
   private postHandlers: handlerType[] = [];
+
+  private telemetry: Telemetry;
 
   public constructor(public options: ExpressBridgeOptions) {}
 
@@ -29,14 +35,42 @@ export class ExpressBridge {
   }
 
   public async process(incomingEvent: EventType): Promise<void> {
+    // if telemetry is defined, set uuid and call beacon
+    if (process.env.EB_TELEMETRY && this.options.telemetry) {
+      this.telemetry = new Telemetry(
+        incomingEvent.data?.eventId || v4(),
+        this.options.telemetry
+      );
+    }
+    this.telemetry?.beacon('EB-PROCESS', {
+      sourceEventId: incomingEvent.data?.uuid,
+      description: 'Process function called. Generating process ID.',
+      data: {
+        event: incomingEvent,
+      },
+    });
+
     const matchedPatterns = this.comparableCollection.filter(
       (eventPattern: EventPattern<Partial<typeof incomingEvent>>) => {
         return eventPattern.test(incomingEvent);
       }
     );
+
     if (matchedPatterns.length > 0) {
+      this.telemetry?.beacon('EB-MATCH', {
+        sourceEventId: incomingEvent.data?.uuid,
+        description: 'Patterns matched for event. Calling assigned handlers.',
+        data: {
+          matchedPatterns,
+        },
+      });
+
       // run pre hook
       const output = await pipeline(incomingEvent, ...this.preHandlers);
+      this.telemetry?.beacon('EB-PRE', {
+        sourceEventId: incomingEvent.data?.uuid,
+        data: output,
+      });
 
       // run pattern handlers
       for (const pattern of matchedPatterns) {
@@ -47,8 +81,17 @@ export class ExpressBridge {
         }
       }
 
+      this.telemetry?.beacon('EB-HANDLERS', {
+        sourceEventId: incomingEvent.data?.uuid,
+        data: output,
+      });
+
       // run post handlers
       pipeline(incomingEvent, ...this.postHandlers);
+      this.telemetry?.beacon('EB-POST', {
+        sourceEventId: incomingEvent.data?.uuid,
+        data: incomingEvent,
+      });
     }
   }
 
@@ -58,6 +101,10 @@ export class ExpressBridge {
 
   public post(...handlers: handlerType[]): void {
     this.postHandlers.push(...handlers);
+  }
+
+  public getTelemetryId() {
+    return this.telemetry.eventId;
   }
 }
 
