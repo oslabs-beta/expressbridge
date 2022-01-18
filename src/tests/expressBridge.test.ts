@@ -1,4 +1,4 @@
-import ExpressBridge from '../ExpressBridge';
+import { ExpressBridge } from '../ExpressBridge';
 import type { handlerType } from '../EventPattern';
 import messages from './expressBridge.data';
 

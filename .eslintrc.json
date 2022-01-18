@@ -18,7 +18,8 @@
       "@typescript-eslint"
   ],
   "rules": {
-    "import/extensions": "off"
+    "import/extensions": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   },
   "overrides": [
     {
