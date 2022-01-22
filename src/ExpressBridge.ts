@@ -67,6 +67,7 @@ export class ExpressBridge {
 
       // run pre hook
       const output = await pipeline(incomingEvent, ...this.preHandlers);
+
       this.telemetry?.beacon('EB-PRE', {
         sourceEventId: incomingEvent.data?.uuid,
         data: output,
@@ -87,14 +88,17 @@ export class ExpressBridge {
       });
 
       // run post handlers
-      pipeline(incomingEvent, ...this.postHandlers);
+      if (this.postHandlers) pipeline(output, ...this.postHandlers);
+
       this.telemetry?.beacon('EB-POST', {
         sourceEventId: incomingEvent.data?.uuid,
         data: incomingEvent,
       });
-    } else if (this.options.alwaysRunHooks) {
-      pipeline(incomingEvent, ...this.preHandlers);
-      pipeline(incomingEvent, ...this.postHandlers);
+    } else if (
+      this.options.alwaysRunHooks &&
+      (this.preHandlers || this.postHandlers)
+    ) {
+      await pipeline(incomingEvent, ...this.preHandlers, ...this.postHandlers);
     }
   }
 

@@ -43,12 +43,16 @@ describe('Test ExpressBridge', () => {
     expressBridge.pre(preHook as handlerType);
     expressBridge.post(postHook as handlerType);
 
-    expressBridge.use(basePattern, [handler as handlerType], errorHandler);
+    expressBridge.use(
+      messages.basicMessage,
+      [handler as handlerType],
+      errorHandler
+    );
 
     await expressBridge.process(messages.instanceTerminatedMessage);
 
-    //expect(preHook).toHaveBeenCalledTimes(0);
-    //expect(postHook).toHaveBeenCalledTimes(0);
-    expect(true).toBe(true);
+    expect(preHook).toHaveBeenCalledTimes(0);
+    expect(postHook).toHaveBeenCalledTimes(0);
+    //expect(true).toBe(true);
   });
 });
