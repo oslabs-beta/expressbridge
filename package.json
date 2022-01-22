@@ -1,6 +1,6 @@
 {
   "name": "@oslabs-beta/expressbridge",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "expressbridge is a event-driven microservice framework for Node.js",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -42,7 +42,7 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/oslabs-beta/expressbridge/issues"
-  },  
+  },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/oslabs-beta/expressbridge"
   },
