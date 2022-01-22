@@ -1,5 +1,5 @@
 {
-  "name": "@oslabs-beta/eventbridge-express",
+  "name": "@oslabs-beta/expressbridge",
   "version": "0.1.15",
   "description": "eventbridge-express is an eventbridge client for express microservices",
   "main": "./dist/index.js",
