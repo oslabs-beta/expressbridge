@@ -36,14 +36,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oslabs-beta/eventbridge-express.git"
+    "url": "git+https://github.com/oslabs-beta/expresbridge.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/oslabs-beta/eventbridge-express/issues"
+    "url": "https://github.com/oslabs-beta/expressbridge/issues"
   },
-  "homepage": "https://github.com/oslabs-beta/eventbridge-express#readme",
+  "homepage": "https://github.com/oslabs-beta/expressbridge#readme",
   "lint-staged": {
     "src/**/*.ts": [
       "npm run format",
