@@ -12,10 +12,10 @@ ExpressBridge v1.0
 ExpressBridge is a free and open source microservice framework for Nodejs-based microservices. It is appropriate for use in any microservice or FaaS environment and across all cloud vendors.
 </p>
 <p align="center">
-  <a href="https://github.com/oslabs-beta/eventbridge-express/blob/dev/LICENSE">
+  <a href="https://github.com/oslabs-beta/expressbridge/blob/dev/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Gatsby is released under the MIT license." />
   </a>
-  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/oslabs-beta/eventbridge-express/DEV%20CI">
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/oslabs-beta/expressbridge/DEV%20CI">
 </p>
 
 ## What's in this document
