@@ -1,6 +1,6 @@
 {
   "name": "@oslabs-beta/expressbridge",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "expressbridge is a event-driven microservice framework for Node.js",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
