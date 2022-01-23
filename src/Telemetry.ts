@@ -13,11 +13,13 @@ export class Telemetry {
     message: Record<string, any>
   ): Promise<void> {
     try {
+      const { serviceName, ...requestConfig } = this.requestConfig;
       await axios({
-        ...this.requestConfig,
+        ...requestConfig,
         data: {
           tag,
           eventId: this.eventId,
+          serviceName,
           message,
         },
       });

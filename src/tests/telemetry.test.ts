@@ -24,7 +24,7 @@ describe('test telemetry functionality', () => {
       headers: {
         Authorization: 'bearer foo',
       },
-      serviceName: 'order',
+      serviceName: 'orders',
     });
 
     expect(telemetry.eventId).toBeDefined();
@@ -50,6 +50,7 @@ describe('test telemetry functionality', () => {
           tag: 'EB-TEST',
           message,
           eventId,
+          serviceName: 'orders',
         },
       })
     );
