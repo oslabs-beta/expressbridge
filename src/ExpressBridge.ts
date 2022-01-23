@@ -35,70 +35,82 @@ export class ExpressBridge {
   }
 
   public async process(incomingEvent: EventType): Promise<void> {
-    // if telemetry is defined, set uuid and call beacon
-    if (process.env.EB_TELEMETRY && this.options.telemetry) {
-      this.telemetry = new Telemetry(
-        incomingEvent.data?.eventId || v4(),
-        this.options.telemetry
-      );
-    }
-    this.telemetry?.beacon('EB-PROCESS', {
-      sourceEventId: incomingEvent.data?.uuid,
-      description: 'Process function called. Generating process ID.',
-      data: {
-        event: incomingEvent,
-      },
-    });
-
-    const matchedPatterns = this.comparableCollection.filter(
-      (eventPattern: EventPattern<Partial<typeof incomingEvent>>) => {
-        return eventPattern.test(incomingEvent);
+    try {
+      // if telemetry is defined, set uuid and call beacon
+      if (process.env.EB_TELEMETRY && this.options.telemetry) {
+        this.telemetry = new Telemetry(
+          incomingEvent.data?.eventId || v4(),
+          this.options.telemetry
+        );
       }
-    );
-
-    if (matchedPatterns.length > 0) {
-      this.telemetry?.beacon('EB-MATCH', {
+      this.telemetry?.beacon('EB-PROCESS', {
         sourceEventId: incomingEvent.data?.uuid,
-        description: 'Patterns matched for event. Calling assigned handlers.',
+        description: 'Process function called. Generating process ID.',
         data: {
-          matchedPatterns,
+          event: incomingEvent,
         },
       });
 
-      // run pre hook
-      const output = await pipeline(incomingEvent, ...this.preHandlers);
-
-      this.telemetry?.beacon('EB-PRE', {
-        sourceEventId: incomingEvent.data?.uuid,
-        data: output,
-      });
-
-      // run pattern handlers
-      for (const pattern of matchedPatterns) {
-        try {
-          await pipeline(output, ...pattern.getHandlers());
-        } catch (err) {
-          pattern.getErrorHandler()(err);
+      const matchedPatterns = this.comparableCollection.filter(
+        (eventPattern: EventPattern<Partial<typeof incomingEvent>>) => {
+          return eventPattern.test(incomingEvent);
         }
+      );
+
+      if (matchedPatterns.length > 0) {
+        this.telemetry?.beacon('EB-MATCH', {
+          sourceEventId: incomingEvent.data?.uuid,
+          description: 'Patterns matched for event. Calling assigned handlers.',
+          data: {
+            matchedPatterns,
+          },
+        });
+
+        // run pre hook
+        const output = await pipeline(incomingEvent, ...this.preHandlers);
+
+        this.telemetry?.beacon('EB-PRE', {
+          sourceEventId: incomingEvent.data?.uuid,
+          data: output,
+        });
+
+        // run pattern handlers
+        for (const pattern of matchedPatterns) {
+          try {
+            await pipeline(output, ...pattern.getHandlers());
+          } catch (err) {
+            pattern.getErrorHandler()(err);
+          }
+        }
+
+        this.telemetry?.beacon('EB-HANDLERS', {
+          sourceEventId: incomingEvent.data?.uuid,
+          data: output,
+        });
+
+        // run post handlers
+        if (this.postHandlers) pipeline(output, ...this.postHandlers);
+
+        this.telemetry?.beacon('EB-POST', {
+          sourceEventId: incomingEvent.data?.uuid,
+          data: incomingEvent,
+        });
+      } else if (
+        this.options.alwaysRunHooks &&
+        (this.preHandlers || this.postHandlers)
+      ) {
+        await pipeline(
+          incomingEvent,
+          ...this.preHandlers,
+          ...this.postHandlers
+        );
       }
-
-      this.telemetry?.beacon('EB-HANDLERS', {
+    } catch (err: unknown) {
+      console.log('Error occurred processing event: ', err);
+      this.telemetry?.beacon('EB-ERROR', {
         sourceEventId: incomingEvent.data?.uuid,
-        data: output,
+        data: err,
       });
-
-      // run post handlers
-      if (this.postHandlers) pipeline(output, ...this.postHandlers);
-
-      this.telemetry?.beacon('EB-POST', {
-        sourceEventId: incomingEvent.data?.uuid,
-        data: incomingEvent,
-      });
-    } else if (
-      this.options.alwaysRunHooks &&
-      (this.preHandlers || this.postHandlers)
-    ) {
-      await pipeline(incomingEvent, ...this.preHandlers, ...this.postHandlers);
     }
   }
 
