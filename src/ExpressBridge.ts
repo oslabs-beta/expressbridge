@@ -124,9 +124,11 @@ export class ExpressBridge {
 }
 
 function pipeline(message: EventType, ...functions: handlerType[]): EventType {
+  console.log('pipelining handlers', functions);
   const reduced = functions.reduce(async (acc, func) => {
     return func(await acc);
   }, message);
 
+  console.log('pipeline results', reduced);
   return reduced;
 }
