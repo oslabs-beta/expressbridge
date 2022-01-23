@@ -38,8 +38,9 @@ export class ExpressBridge {
     try {
       // if telemetry is defined, set uuid and call beacon
       if (process.env.EB_TELEMETRY && this.options.telemetry) {
+        incomingEvent.data.eventId = incomingEvent.data?.eventId || v4();
         this.telemetry = new Telemetry(
-          incomingEvent.data?.eventId || v4(),
+          incomingEvent.data.eventId,
           this.options.telemetry
         );
       }
