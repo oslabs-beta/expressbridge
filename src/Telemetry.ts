@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { AxiosRequestConfig } from 'axios';
 
+export type TelemetryConfig = Partial<AxiosRequestConfig> & {
+  serviceName: string;
+};
+
 export class Telemetry {
-  constructor(
-    public eventId: string,
-    private requestConfig: Partial<AxiosRequestConfig>
-  ) {}
+  constructor(public eventId: string, private requestConfig: TelemetryConfig) {}
 
   public async beacon(
     tag: string,

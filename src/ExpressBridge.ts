@@ -1,6 +1,6 @@
-import { AxiosRequestConfig } from 'axios';
 import { v4 } from 'uuid';
 import type { handlerType, errorHandlerType } from './EventPattern';
+import type { TelemetryConfig } from './Telemetry';
 import { EventPattern } from './EventPattern';
 import { Telemetry } from './Telemetry';
 
@@ -8,7 +8,7 @@ type EventType = Record<string, any>;
 
 interface ExpressBridgeOptions {
   alwaysRunHooks?: boolean;
-  telemetry?: Partial<AxiosRequestConfig>;
+  telemetry?: TelemetryConfig;
 }
 export class ExpressBridge {
   private comparableCollection: EventPattern<unknown>[] = [];

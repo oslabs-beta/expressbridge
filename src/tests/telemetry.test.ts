@@ -24,6 +24,7 @@ describe('test telemetry functionality', () => {
       headers: {
         Authorization: 'bearer foo',
       },
+      serviceName: 'order',
     });
 
     expect(telemetry.eventId).toBeDefined();
