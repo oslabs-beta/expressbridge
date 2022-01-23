@@ -11,13 +11,18 @@ export class Telemetry {
     tag: string,
     message: Record<string, any>
   ): Promise<void> {
-    await axios({
-      ...this.requestConfig,
-      data: {
-        tag,
-        eventId: this.eventId,
-        message,
-      },
-    });
+    console.log('Called Telemetry Beacon');
+    try {
+      await axios({
+        ...this.requestConfig,
+        data: {
+          tag,
+          eventId: this.eventId,
+          message,
+        },
+      });
+    } catch (err) {
+      console.log('Error calling telemetry beacon', err);
+    }
   }
 }
