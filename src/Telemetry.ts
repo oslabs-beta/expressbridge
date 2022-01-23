@@ -11,7 +11,6 @@ export class Telemetry {
     tag: string,
     message: Record<string, any>
   ): Promise<void> {
-    console.log('Called Telemetry Beacon');
     try {
       await axios({
         ...this.requestConfig,

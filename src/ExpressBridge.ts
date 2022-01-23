@@ -36,10 +36,6 @@ export class ExpressBridge {
 
   public async process(incomingEvent: EventType): Promise<void> {
     // if telemetry is defined, set uuid and call beacon
-    console.log(
-      'Telemetry enabled: ',
-      process.env.EB_TELEMETRY && this.options.telemetry
-    );
     if (process.env.EB_TELEMETRY && this.options.telemetry) {
       this.telemetry = new Telemetry(
         incomingEvent.data?.eventId || v4(),
@@ -60,11 +56,7 @@ export class ExpressBridge {
       }
     );
 
-    console.log('matchedPatterns', matchedPatterns);
-
     if (matchedPatterns.length > 0) {
-      console.log('patterns matched. telemetry object', this.telemetry);
-
       this.telemetry?.beacon('EB-MATCH', {
         sourceEventId: incomingEvent.data?.uuid,
         description: 'Patterns matched for event. Calling assigned handlers.',
@@ -124,11 +116,9 @@ export class ExpressBridge {
 }
 
 function pipeline(message: EventType, ...functions: handlerType[]): EventType {
-  console.log('pipelining handlers', functions);
   const reduced = functions.reduce(async (acc, func) => {
     return func(await acc);
   }, message);
 
-  console.log('pipeline results', reduced);
   return reduced;
 }
