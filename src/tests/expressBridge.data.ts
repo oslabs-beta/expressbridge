@@ -15,4 +15,7 @@ export default {
       state: 'terminated',
     },
   },
+  basicMessage: {
+    exampleValue: 'test',
+  },
 };
