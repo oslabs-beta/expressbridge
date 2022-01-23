@@ -6,7 +6,10 @@ export type TelemetryConfig = Partial<AxiosRequestConfig> & {
 };
 
 export class Telemetry {
-  constructor(public eventId: string, private requestConfig: TelemetryConfig) {}
+  constructor(
+    public eb_event_id: string,
+    private requestConfig: TelemetryConfig
+  ) {}
 
   public async beacon(
     tag: string,
@@ -18,7 +21,7 @@ export class Telemetry {
         ...requestConfig,
         data: {
           tag,
-          eventId: this.eventId,
+          eb_event_id: this.eb_event_id,
           serviceName,
           message,
         },

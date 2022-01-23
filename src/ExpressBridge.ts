@@ -37,15 +37,16 @@ export class ExpressBridge {
   public async process(incomingEvent: EventType): Promise<void> {
     try {
       // if telemetry is defined, set uuid and call beacon
+      const telemetry = process.env.EB_TELEMETRY;
       if (process.env.EB_TELEMETRY && this.options.telemetry) {
-        incomingEvent.data.eventId = incomingEvent.data?.eventId || v4();
+        incomingEvent.body.eb_event_id =
+          incomingEvent.body?.eb_event_id || v4();
         this.telemetry = new Telemetry(
-          incomingEvent.data.eventId,
+          incomingEvent.body.eb_event_id,
           this.options.telemetry
         );
       }
       await this.telemetry?.beacon('EB-PROCESS', {
-        sourceEventId: incomingEvent.data?.uuid,
         description: 'Process function called. Generating process ID.',
         data: {
           event: incomingEvent,
@@ -60,7 +61,6 @@ export class ExpressBridge {
 
       if (matchedPatterns.length > 0) {
         await this.telemetry?.beacon('EB-MATCH', {
-          sourceEventId: incomingEvent.data?.uuid,
           description: 'Patterns matched for event. Calling assigned handlers.',
           data: {
             matchedPatterns,
@@ -71,7 +71,7 @@ export class ExpressBridge {
         const output = await pipeline(incomingEvent, ...this.preHandlers);
 
         await this.telemetry?.beacon('EB-PRE', {
-          sourceEventId: incomingEvent.data?.uuid,
+          description: 'Pre hooks running',
           data: output,
         });
 
@@ -85,7 +85,7 @@ export class ExpressBridge {
         }
 
         await this.telemetry?.beacon('EB-HANDLERS', {
-          sourceEventId: incomingEvent.data?.uuid,
+          description: 'Handlers running',
           data: output,
         });
 
@@ -93,7 +93,7 @@ export class ExpressBridge {
         if (this.postHandlers) pipeline(output, ...this.postHandlers);
 
         await this.telemetry?.beacon('EB-POST', {
-          sourceEventId: incomingEvent.data?.uuid,
+          description: 'Post hooks running',
           data: incomingEvent,
         });
       } else if (
@@ -109,7 +109,7 @@ export class ExpressBridge {
     } catch (err: unknown) {
       console.log('Error occurred processing event: ', err);
       await this.telemetry?.beacon('EB-ERROR', {
-        sourceEventId: incomingEvent.data?.uuid,
+        description: 'Error occurred in processing',
         data: err,
       });
     }
@@ -124,7 +124,7 @@ export class ExpressBridge {
   }
 
   public getTelemetryId() {
-    return this.telemetry.eventId;
+    return this.telemetry.eb_event_id;
   }
 }
 

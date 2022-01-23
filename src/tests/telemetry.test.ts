@@ -27,7 +27,7 @@ describe('test telemetry functionality', () => {
       serviceName: 'orders',
     });
 
-    expect(telemetry.eventId).toBeDefined();
+    expect(telemetry.eb_event_id).toBeDefined();
 
     const message = {
       name: 'Johnny Appleseed',
@@ -49,7 +49,7 @@ describe('test telemetry functionality', () => {
         data: {
           tag: 'EB-TEST',
           message,
-          eventId,
+          eb_event_id: eventId,
           serviceName: 'orders',
         },
       })
