@@ -37,8 +37,12 @@ export class ExpressBridge {
   public async process(incomingEvent: EventType): Promise<void> {
     try {
       // if telemetry is defined, set uuid and call beacon
-      const telemetry = process.env.EB_TELEMETRY;
+      console.log('Telemetry enabled: ', !!process.env.EB_TELEMETRY);
       if (process.env.EB_TELEMETRY && this.options.telemetry) {
+        console.log(
+          'Telemetry enabled, setting trace tag on event: ',
+          incomingEvent
+        );
         incomingEvent.body.eb_event_id =
           incomingEvent.body?.eb_event_id || v4();
         this.telemetry = new Telemetry(
