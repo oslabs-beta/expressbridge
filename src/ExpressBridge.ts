@@ -69,6 +69,8 @@ export class ExpressBridge {
 
       const matchedPatterns = this.comparableCollection.filter(
         (eventPattern: EventPattern<Partial<typeof incomingEvent>>) => {
+          console.log('testing pattern: ', eventPattern);
+          console.log('against... ', incomingEvent);
           return eventPattern.test(incomingEvent);
         }
       );
