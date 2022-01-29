@@ -1,4 +1,5 @@
 export default {
+  // message 1
   instanceTerminatedMessage: {
     version: '0',
     id: '6a7e8feb-b491-4cf7-a9f1-bf3703467718',
@@ -15,9 +16,11 @@ export default {
       state: 'terminated',
     },
   },
+  // message 2
   basicMessage: {
     exampleValue: 'test',
   },
+  // message 3
   httpMessage: {
     body: {
       id: 1234,

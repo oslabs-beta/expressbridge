@@ -1,12 +1,12 @@
 import { stringScenarios } from './eventPattern.data';
 import { EventPattern } from '../EventPattern';
 
-describe('Test EventPattern', () => {
+describe('Test EventPattern.test', () => {
   test.each(stringScenarios)(
     'should produce correct test results given string pattern',
     (patternString, actual, output) => {
       const basePattern = {
-        source: patternString,
+        source: patternString, //'orders.*'
       };
       const pattern = new EventPattern(
         basePattern,
@@ -17,7 +17,8 @@ describe('Test EventPattern', () => {
       );
 
       const result = pattern.test({
-        source: actual,
+        // incoming eventm
+        source: actual, // 'orders.canada'
       });
 
       expect(result).toBe(output);

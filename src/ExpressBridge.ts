@@ -43,8 +43,16 @@ export class ExpressBridge {
           'Telemetry enabled, setting trace tag on event: ',
           incomingEvent
         );
-        incomingEvent.body.eb_event_id =
-          incomingEvent.body?.eb_event_id || v4();
+        if ('body' in incomingEvent) {
+          incomingEvent.body.eb_event_id =
+            incomingEvent.body?.eb_event_id || v4();
+        } else if (incomingEvent.Records) {
+          for (const record of incomingEvent.Records) {
+            record.eb_event_id = record.eb_event_id || v4();
+          }
+        } else {
+          incomingEvent.eb_event_id = incomingEvent.eb_event_id || v4();
+        }
         this.telemetry = new Telemetry(
           incomingEvent.body.eb_event_id,
           this.options.telemetry
