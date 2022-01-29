@@ -42,7 +42,7 @@ export class ExpressBridge {
       if (process.env.EB_TELEMETRY && this.options.telemetry) {
         console.log('Telemetry enabled, setting trace tag on event.');
         this.telemetry = new Telemetry(this.options.telemetry);
-        const tag = this.telemetry.tagEvent(incomingEvent);
+        this.telemetry.tagEvent(incomingEvent);
       }
 
       await this.telemetry?.beacon('EB-PROCESS', {
@@ -53,6 +53,8 @@ export class ExpressBridge {
       });
 
       const matchedPatterns = this.match(incomingEvent);
+
+      console.log('Patterns matched: ', matchedPatterns);
 
       if (matchedPatterns.length > 0) {
         await this.telemetry?.beacon('EB-MATCH', {

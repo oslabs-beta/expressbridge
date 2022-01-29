@@ -42,11 +42,11 @@ export class Telemetry {
       for (const record of payload) {
         record.eb_event_id = record.eb_event_id || tag;
       }
-    } else if (!payload) {
-      event.eb_event_id = event.eb_event_id || tag;
-    } else {
+    } else if (payload) {
       payload = typeof payload === 'string' ? JSON.parse(payload) : payload;
       payload.eb_event_id = payload.eb_event_id || tag;
+    } else {
+      event.eb_event_id = event.eb_event_id || tag;
     }
 
     this.eb_event_id = tag;
