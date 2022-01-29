@@ -44,6 +44,10 @@ export class ExpressBridge {
           incomingEvent
         );
         if ('body' in incomingEvent) {
+          incomingEvent.body =
+            typeof incomingEvent.body === 'string'
+              ? JSON.parse(incomingEvent.body)
+              : incomingEvent.body;
           incomingEvent.body.eb_event_id =
             incomingEvent.body?.eb_event_id || v4();
         } else if (incomingEvent.Records) {
