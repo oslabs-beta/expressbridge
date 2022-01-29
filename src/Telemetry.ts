@@ -45,6 +45,7 @@ export class Telemetry {
     } else if (payload) {
       payload = typeof payload === 'string' ? JSON.parse(payload) : payload;
       payload.eb_event_id = payload.eb_event_id || tag;
+      event[body ? 'body' : 'detail'] = payload;
     } else {
       event.eb_event_id = event.eb_event_id || tag;
     }
