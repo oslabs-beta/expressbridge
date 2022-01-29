@@ -7,10 +7,9 @@ export type TelemetryConfig = Partial<AxiosRequestConfig> & {
 };
 
 export class Telemetry {
-  constructor(
-    public eb_event_id: string,
-    private requestConfig: TelemetryConfig
-  ) {}
+  private eb_event_id: string;
+
+  constructor(private requestConfig: TelemetryConfig) {}
 
   public async beacon(
     tag: string,
@@ -32,19 +31,25 @@ export class Telemetry {
     }
   }
 
-  public tagEvent(event: Record<string, any>): Record<string, any> {
+  public tagEvent(event: Record<string, any>): string {
     const { body, detail, Records } = event;
     let payload = body ?? detail ?? Records;
+
+    console.log('Tagging payload: ', payload);
 
     const tag = v4();
     if (Array.isArray(payload)) {
       for (const record of payload) {
         record.eb_event_id = record.eb_event_id || tag;
       }
+    } else if (!payload) {
+      event.eb_event_id = event.eb_event_id || tag;
     } else {
       payload = typeof payload === 'string' ? JSON.parse(payload) : payload;
       payload.eb_event_id = payload.eb_event_id || tag;
     }
-    return event;
+
+    this.eb_event_id = tag;
+    return tag;
   }
 }

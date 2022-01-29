@@ -73,4 +73,23 @@ export default {
     },
     stageVariables: {},
   },
+  eventBridgeMessage: {
+    version: '0',
+    id: '301a585b-1fc4-00bb-f5b2-a4f887684942',
+    'detail-type': 'message',
+    source: 'acme.payments',
+    account: '018345072091',
+    time: '2022-01-29T05:57:47Z',
+    region: 'us-east-1',
+    resources: [],
+    detail: {
+      id: 1234,
+      userId: 'user@example.com',
+      price: 10,
+      serviceTier: 'premium',
+      address: '2965 S Sierra Heights, Mesa, AZ 85212',
+      createdAt: 1000001231234,
+      eb_event_id: '20e1b1ba-05da-40b9-aa98-6d81eca40041',
+    },
+  },
 };

@@ -41,24 +41,8 @@ export class ExpressBridge {
       console.log('Telemetry enabled: ', !!process.env.EB_TELEMETRY);
       if (process.env.EB_TELEMETRY && this.options.telemetry) {
         console.log('Telemetry enabled, setting trace tag on event.');
-        if ('body' in incomingEvent) {
-          incomingEvent.body =
-            typeof incomingEvent.body === 'string'
-              ? JSON.parse(incomingEvent.body)
-              : incomingEvent.body;
-          incomingEvent.body.eb_event_id =
-            incomingEvent.body?.eb_event_id || v4();
-        } else if (incomingEvent.Records) {
-          for (const record of incomingEvent.Records) {
-            record.eb_event_id = record.eb_event_id || v4();
-          }
-        } else {
-          incomingEvent.eb_event_id = incomingEvent.eb_event_id || v4();
-        }
-        this.telemetry = new Telemetry(
-          incomingEvent.body.eb_event_id,
-          this.options.telemetry
-        );
+        this.telemetry = new Telemetry(this.options.telemetry);
+        const tag = this.telemetry.tagEvent(incomingEvent);
       }
 
       await this.telemetry?.beacon('EB-PROCESS', {
@@ -133,11 +117,7 @@ export class ExpressBridge {
   public post(...handlers: handlerType[]): void {
     this.postHandlers.push(...handlers);
   }
-
-  public getTelemetryId() {
-    return this.telemetry.eb_event_id;
-  }
-
+  /*  */
   private match(
     incomingEvent: Record<string, any>
   ): EventPattern<typeof incomingEvent>[] {

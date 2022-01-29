@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { v4 } from 'uuid';
 import { Telemetry } from '../Telemetry';
 
 jest.mock('axios', () => ({
@@ -17,8 +16,7 @@ describe('test telemetry functionality', () => {
   test('should exercise telemetry functionality under correct conditions', async () => {
     expect(process.env.EB_TELEMETRY).toBe('true');
 
-    const eventId = v4();
-    const telemetry = new Telemetry(eventId, {
+    const telemetry = new Telemetry({
       url: 'foo.com/telemetry',
       method: 'post',
       headers: {
@@ -26,8 +24,6 @@ describe('test telemetry functionality', () => {
       },
       serviceName: 'orders',
     });
-
-    expect(telemetry.eb_event_id).toBeDefined();
 
     const message = {
       name: 'Johnny Appleseed',
@@ -42,6 +38,7 @@ describe('test telemetry functionality', () => {
       },
     };
 
+    const tag = telemetry.tagEvent(message);
     telemetry.beacon('EB-TEST', message);
 
     expect(axios).toHaveBeenCalledWith(
@@ -49,7 +46,7 @@ describe('test telemetry functionality', () => {
         data: {
           tag: 'EB-TEST',
           message,
-          eb_event_id: eventId,
+          eb_event_id: tag,
           serviceName: 'orders',
         },
       })

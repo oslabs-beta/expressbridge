@@ -66,39 +66,3 @@ describe('Test ExpressBridge', () => {
     //expect(true).toBe(true);
   });
 });
-
-describe('test event id persistence between services', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test('should persist eb_event_id between services', async () => {
-    // expressBridge modifies the event by 'tagging' it with an
-    // id used for telemetry
-    // this is where a REAL wrapper object would be useful later --
-    // to track related event messages
-    process.env.EB_TELEMETRY = 'true';
-    const message = { ...messages.httpMessage };
-
-    const ordersBridge = new ExpressBridge({
-      alwaysRunHooks: true,
-      telemetry: {
-        serviceName: 'orders',
-      },
-    });
-    ordersBridge.process(message);
-    const ordersEventId = message.body.eb_event_id;
-    expect(ordersEventId).toBeTruthy();
-
-    const paymentsBridge = new ExpressBridge({
-      alwaysRunHooks: true,
-      telemetry: {
-        serviceName: 'payments',
-      },
-    });
-    paymentsBridge.process(message);
-    const paymentsEventId = message.body.eb_event_id;
-
-    expect(ordersEventId).toEqual(paymentsEventId);
-  });
-});
