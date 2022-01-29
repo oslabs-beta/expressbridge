@@ -35,6 +35,7 @@ export class ExpressBridge {
   }
 
   public async process(incomingEvent: EventType): Promise<void> {
+    console.log('Handling incoming event: ', incomingEvent);
     try {
       // if telemetry is defined, set uuid and call beacon
       console.log('Telemetry enabled: ', !!process.env.EB_TELEMETRY);
