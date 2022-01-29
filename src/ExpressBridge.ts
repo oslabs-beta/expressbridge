@@ -39,10 +39,7 @@ export class ExpressBridge {
       // if telemetry is defined, set uuid and call beacon
       console.log('Telemetry enabled: ', !!process.env.EB_TELEMETRY);
       if (process.env.EB_TELEMETRY && this.options.telemetry) {
-        console.log(
-          'Telemetry enabled, setting trace tag on event: ',
-          incomingEvent
-        );
+        console.log('Telemetry enabled, setting trace tag on event.');
         if ('body' in incomingEvent) {
           incomingEvent.body =
             typeof incomingEvent.body === 'string'
@@ -62,6 +59,7 @@ export class ExpressBridge {
           this.options.telemetry
         );
       }
+
       await this.telemetry?.beacon('EB-PROCESS', {
         description: 'Process function called. Generating process ID.',
         data: {
@@ -74,6 +72,10 @@ export class ExpressBridge {
           return eventPattern.test(incomingEvent);
         }
       );
+
+      console.log('Matched patterns: ', matchedPatterns);
+      console.log('Did we match patterns?: ', matchedPatterns.length > 0);
+      console.log('patterns to match against: ', this.comparableCollection);
 
       if (matchedPatterns.length > 0) {
         await this.telemetry?.beacon('EB-MATCH', {
