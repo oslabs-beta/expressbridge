@@ -68,17 +68,7 @@ export class ExpressBridge {
         },
       });
 
-      const matchedPatterns = this.comparableCollection.filter(
-        (eventPattern: EventPattern<Partial<typeof incomingEvent>>) => {
-          console.log('testing pattern: ', eventPattern);
-          console.log('against... ', incomingEvent);
-          return eventPattern.test(incomingEvent);
-        }
-      );
-
-      console.log('Matched patterns: ', matchedPatterns);
-      console.log('Did we match patterns?: ', matchedPatterns.length > 0);
-      console.log('patterns to match against: ', this.comparableCollection);
+      const matchedPatterns = this.match(incomingEvent);
 
       if (matchedPatterns.length > 0) {
         await this.telemetry?.beacon('EB-MATCH', {
@@ -146,6 +136,16 @@ export class ExpressBridge {
 
   public getTelemetryId() {
     return this.telemetry.eb_event_id;
+  }
+
+  private match(
+    incomingEvent: Record<string, any>
+  ): EventPattern<typeof incomingEvent>[] {
+    return this.comparableCollection.filter(
+      (eventPattern: EventPattern<Partial<typeof incomingEvent>>) => {
+        return eventPattern.test(incomingEvent as any);
+      }
+    );
   }
 }
 
