@@ -10,3 +10,16 @@ export const stringScenarios = [
   ['*beans', 'coolxbeans', true],
   ['beans', 'coolxbeans', false],
 ];
+
+export const nestedScenarios = [
+  [
+    { requestContext: { http: { method: 'POST' } } },
+    { requestContext: { http: { method: 'POST' } } },
+    true,
+  ],
+  [
+    { requestContext: { http: { method: '*' } } },
+    { requestContext: { http: { method: 'POST' } } },
+    true,
+  ],
+];

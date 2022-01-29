@@ -1,4 +1,4 @@
-import { stringScenarios } from './eventPattern.data';
+import { stringScenarios, nestedScenarios } from './eventPattern.data';
 import { EventPattern } from '../EventPattern';
 
 describe('Test EventPattern.test', () => {
@@ -20,6 +20,23 @@ describe('Test EventPattern.test', () => {
         // incoming eventm
         source: actual, // 'orders.canada'
       });
+
+      expect(result).toBe(output);
+    }
+  );
+
+  test.each(nestedScenarios)(
+    'should correctly match nested objects',
+    (patternObj, actual, output) => {
+      const pattern = new EventPattern(
+        patternObj as any,
+        [(input) => input],
+        (err) => {
+          throw err;
+        }
+      );
+
+      const result = pattern.test(actual as any);
 
       expect(result).toBe(output);
     }
