@@ -35,22 +35,24 @@ export class Telemetry {
     const { body, detail, Records } = event;
     let payload = body ?? detail ?? Records;
 
-    console.log('Tagging payload: ', payload);
-
-    const tag = v4();
+    let tag = v4();
     if (Array.isArray(payload)) {
       for (const record of payload) {
-        record.eb_event_id = record.eb_event_id || tag;
+        tag = record.eb_event_id || tag;
+        record.eb_event_id = tag;
       }
     } else if (payload) {
       payload = typeof payload === 'string' ? JSON.parse(payload) : payload;
-      payload.eb_event_id = payload.eb_event_id || tag;
+      tag = payload.eb_event_id || tag;
+      payload.eb_event_id = tag;
       event[body ? 'body' : 'detail'] = payload;
     } else {
-      event.eb_event_id = event.eb_event_id || tag;
+      tag = event.eb_event_id || tag;
+      event.eb_event_id = tag;
     }
 
     this.eb_event_id = tag;
+
     return tag;
   }
 }

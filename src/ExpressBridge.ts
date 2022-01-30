@@ -1,4 +1,3 @@
-import { v4 } from 'uuid';
 import type { handlerType, errorHandlerType } from './EventPattern';
 import type { TelemetryConfig } from './Telemetry';
 import { EventPattern } from './EventPattern';
@@ -35,12 +34,10 @@ export class ExpressBridge {
   }
 
   public async process(incomingEvent: EventType): Promise<void> {
-    console.log('Handling incoming event: ', incomingEvent);
     try {
       // if telemetry is defined, set uuid and call beacon
       console.log('Telemetry enabled: ', !!process.env.EB_TELEMETRY);
       if (process.env.EB_TELEMETRY && this.options.telemetry) {
-        console.log('Telemetry enabled, setting trace tag on event.');
         this.telemetry = new Telemetry(this.options.telemetry);
         this.telemetry.tagEvent(incomingEvent);
       }
@@ -53,8 +50,6 @@ export class ExpressBridge {
       });
 
       const matchedPatterns = this.match(incomingEvent);
-
-      console.log('Patterns matched: ', matchedPatterns);
 
       if (matchedPatterns.length > 0) {
         await this.telemetry?.beacon('EB-MATCH', {
