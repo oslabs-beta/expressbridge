@@ -1,0 +1,3 @@
+{
+    "jest.jestCommandLine": "EB_TELEMETRY=true npm t --"
+}
