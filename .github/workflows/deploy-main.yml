@@ -20,6 +20,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: Prepare
+        run: npm run prepare:ci -- ${{ github.ref }}
+
       # Install dependencies
       - name: Install
         run: npm install

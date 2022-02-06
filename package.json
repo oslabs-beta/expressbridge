@@ -1,6 +1,6 @@
 {
-  "name": "@oslabs-beta/expressbridge",
-  "version": "0.0.26",
+  "name": "expressbridge",
+  "version": "1.1.0",
   "description": "expressbridge is a event-driven microservice framework for Node.js",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -12,6 +12,7 @@
     "format": "prettier -c src/*",
     "prepare": "husky install",
     "lint": "eslint src/**/*.ts",
+    "prepare:ci": "./ci.sh",
     "format:fix": "prettier -c src/* --write",
     "lint:fix": "eslint src/**/*.ts --fix"
   },
