@@ -5,7 +5,7 @@ sed -i "s/@oslabs-beta\\/expressbridge/expressbridge/g" package.json
 IFS='/';
 
 # read in github.ref property
-read -ra ref <<< $1
+read -ra ref <<< "$1"
 
 TAG_VERSION = $ref[3] 
 
